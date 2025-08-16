@@ -24,6 +24,7 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
     // Enums
     enum Faction { GRAVEMIND_SYNDICATE, HEX_ASSEMBLY, CHROME_COVENANT, WRAITH_COURT }
     enum Rarity { COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC }
+    enum ShadowPower { NONE, SHADOW_STEP, VOID_BLAST, DARKNESS_VEIL, SOUL_HARVEST, ABYSSAL_PULL, SHADOW_MIRROR, VOID_WALKER, SHADOW_LORD }
     
     // State variables
     Counters.Counter private _tokenIdCounter;
@@ -34,15 +35,24 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
     mapping(uint256 => AvatarTraits) private _avatarTraits;
     mapping(uint256 => address) private _boundLoadouts;
     
+    // Shadow power storage
+    mapping(uint256 => ShadowPower) private _shadowPowers;
+    mapping(uint256 => uint256) private _shadowPowerCharges;
+    mapping(uint256 => uint256) private _lastShadowPowerRecharge;
+    
     // Faction and rarity distributions
     mapping(Faction => uint256) public factionMintCounts;
     mapping(Rarity => uint256) public rarityMintCounts;
+    mapping(ShadowPower => uint256) public shadowPowerCounts;
     
     // Events
     event AvatarMinted(uint256 indexed tokenId, address indexed owner, Faction faction, Rarity rarity);
     event LoadoutBound(uint256 indexed tokenId, address indexed loadoutAddress);
     event LoadoutUnbound(uint256 indexed tokenId);
     event TraitsRevealed(uint256 indexed tokenId, bytes32 seed);
+    event ShadowPowerAssigned(uint256 indexed tokenId, ShadowPower power, uint256 charges);
+    event ShadowPowerUsed(uint256 indexed tokenId, ShadowPower power, uint256 remainingCharges);
+    event ShadowPowerRecharged(uint256 indexed tokenId, ShadowPower power, uint256 newCharges);
     
     // Structs
     struct AvatarTraits {
@@ -52,6 +62,13 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
         uint8[] traitValues;    // Individual trait values (0-255)
         bool revealed;          // Whether traits have been revealed
         uint256 mintTimestamp;  // When the avatar was minted
+    }
+    
+    struct ShadowPowerData {
+        ShadowPower power;      // Type of shadow power
+        uint256 maxCharges;     // Maximum charges for this power
+        uint256 rechargeRate;   // Charges per day (in seconds)
+        bool unlocked;          // Whether power is unlocked
     }
     
     // Modifiers
@@ -98,6 +115,10 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
         // Generate rarity based on seed
         Rarity rarity = _generateRarity(seed);
         
+        // Generate shadow power based on seed and rarity
+        ShadowPower shadowPower = _generateShadowPower(seed, rarity);
+        uint256 maxCharges = _getShadowPowerCharges(shadowPower);
+        
         // Create and store traits
         _avatarTraits[tokenId] = AvatarTraits({
             seed: seed,
@@ -108,14 +129,21 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
             mintTimestamp: block.timestamp
         });
         
+        // Assign shadow power
+        _shadowPowers[tokenId] = shadowPower;
+        _shadowPowerCharges[tokenId] = maxCharges;
+        _lastShadowPowerRecharge[tokenId] = block.timestamp;
+        
         // Update counters
         factionMintCounts[faction]++;
         rarityMintCounts[rarity]++;
+        shadowPowerCounts[shadowPower]++;
         
         // Mint the token
         _safeMint(to, tokenId);
         
         emit AvatarMinted(tokenId, to, faction, rarity);
+        emit ShadowPowerAssigned(tokenId, shadowPower, maxCharges);
         
         return tokenId;
     }
@@ -230,6 +258,89 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
     }
     
     /**
+     * @dev Returns shadow power information for an avatar
+     * @param tokenId The avatar ID
+     * @return power, current charges, max charges, and recharge info
+     */
+    function getShadowPower(uint256 tokenId) 
+        external 
+        view 
+        validTokenId(tokenId) 
+        returns (
+            ShadowPower power,
+            uint256 currentCharges,
+            uint256 maxCharges,
+            uint256 lastRecharge,
+            bool needsRecharge
+        ) 
+    {
+        power = _shadowPowers[tokenId];
+        currentCharges = _shadowPowerCharges[tokenId];
+        maxCharges = _getShadowPowerCharges(power);
+        lastRecharge = _lastShadowPowerRecharge[tokenId];
+        
+        // Check if recharge is needed
+        uint256 timeSinceRecharge = block.timestamp - lastRecharge;
+        uint256 rechargeRate = _getShadowPowerRechargeRate(power);
+        needsRecharge = timeSinceRecharge >= rechargeRate && currentCharges < maxCharges;
+        
+        return (power, currentCharges, maxCharges, lastRecharge, needsRecharge);
+    }
+    
+    /**
+     * @dev Uses a shadow power charge
+     * @param tokenId The avatar ID
+     * @return remaining charges
+     */
+    function useShadowPower(uint256 tokenId) 
+        external 
+        validTokenId(tokenId) 
+        onlyTokenOwner(tokenId) 
+        returns (uint256) 
+    {
+        require(_shadowPowerCharges[tokenId] > 0, "No shadow power charges");
+        
+        _shadowPowerCharges[tokenId]--;
+        
+        emit ShadowPowerUsed(tokenId, _shadowPowers[tokenId], _shadowPowerCharges[tokenId]);
+        
+        return _shadowPowerCharges[tokenId];
+    }
+    
+    /**
+     * @dev Recharges shadow power charges
+     * @param tokenId The avatar ID
+     * @return new charge count
+     */
+    function rechargeShadowPower(uint256 tokenId) 
+        external 
+        validTokenId(tokenId) 
+        onlyTokenOwner(tokenId) 
+        returns (uint256) 
+    {
+        ShadowPower power = _shadowPowers[tokenId];
+        uint256 maxCharges = _getShadowPowerCharges(power);
+        uint256 rechargeRate = _getShadowPowerRechargeRate(power);
+        
+        uint256 timeSinceRecharge = block.timestamp - _lastShadowPowerRecharge[tokenId];
+        uint256 chargesToAdd = (timeSinceRecharge / rechargeRate) * 1;
+        
+        if (chargesToAdd > 0) {
+            uint256 newCharges = _shadowPowerCharges[tokenId] + chargesToAdd;
+            if (newCharges > maxCharges) {
+                newCharges = maxCharges;
+            }
+            
+            _shadowPowerCharges[tokenId] = newCharges;
+            _lastShadowPowerRecharge[tokenId] = block.timestamp;
+            
+            emit ShadowPowerRecharged(tokenId, power, newCharges);
+        }
+        
+        return _shadowPowerCharges[tokenId];
+    }
+    
+    /**
      * @dev Returns total supply and minted count
      * @return totalSupply and minted count
      */
@@ -271,6 +382,68 @@ contract CursedAvatar721 is ERC721, ERC721URIStorage, Ownable, ICursedAvatar721 
         }
         
         return values;
+    }
+    
+    function _generateShadowPower(bytes32 seed, Rarity rarity) internal pure returns (ShadowPower) {
+        uint256 powerRoll = uint256(keccak256(abi.encodePacked(seed, "SHADOW_POWER"))) % 1000;
+        
+        // Rarity affects shadow power distribution
+        if (rarity == Rarity.MYTHIC) {
+            if (powerRoll < 100) return ShadowPower.SHADOW_LORD;        // 10%
+            if (powerRoll < 300) return ShadowPower.VOID_WALKER;        // 20%
+            if (powerRoll < 600) return ShadowPower.SHADOW_MIRROR;      // 30%
+            return ShadowPower.ABYSSAL_PULL;                             // 40%
+        } else if (rarity == Rarity.LEGENDARY) {
+            if (powerRoll < 150) return ShadowPower.VOID_WALKER;        // 15%
+            if (powerRoll < 400) return ShadowPower.SHADOW_MIRROR;      // 25%
+            if (powerRoll < 700) return ShadowPower.ABYSSAL_PULL;       // 30%
+            return ShadowPower.SOUL_HARVEST;                             // 30%
+        } else if (rarity == Rarity.EPIC) {
+            if (powerRoll < 200) return ShadowPower.SHADOW_MIRROR;      // 20%
+            if (powerRoll < 500) return ShadowPower.ABYSSAL_PULL;       // 30%
+            if (powerRoll < 800) return ShadowPower.SOUL_HARVEST;       // 30%
+            return ShadowPower.DARKNESS_VEIL;                            // 20%
+        } else if (rarity == Rarity.RARE) {
+            if (powerRoll < 300) return ShadowPower.ABYSSAL_PULL;       // 30%
+            if (powerRoll < 600) return ShadowPower.SOUL_HARVEST;       // 30%
+            if (powerRoll < 900) return ShadowPower.DARKNESS_VEIL;      // 30%
+            return ShadowPower.VOID_BLAST;                               // 10%
+        } else if (rarity == Rarity.UNCOMMON) {
+            if (powerRoll < 400) return ShadowPower.SOUL_HARVEST;       // 40%
+            if (powerRoll < 700) return ShadowPower.DARKNESS_VEIL;      // 30%
+            if (powerRoll < 900) return ShadowPower.VOID_BLAST;         // 20%
+            return ShadowPower.SHADOW_STEP;                              // 10%
+        } else {
+            // COMMON
+            if (powerRoll < 500) return ShadowPower.DARKNESS_VEIL;      // 50%
+            if (powerRoll < 800) return ShadowPower.VOID_BLAST;         // 30%
+            if (powerRoll < 950) return ShadowPower.SHADOW_STEP;        // 15%
+            return ShadowPower.NONE;                                     // 5%
+        }
+    }
+    
+    function _getShadowPowerCharges(ShadowPower power) internal pure returns (uint256) {
+        if (power == ShadowPower.SHADOW_LORD) return 5;
+        if (power == ShadowPower.VOID_WALKER) return 4;
+        if (power == ShadowPower.SHADOW_MIRROR) return 4;
+        if (power == ShadowPower.ABYSSAL_PULL) return 3;
+        if (power == ShadowPower.SOUL_HARVEST) return 3;
+        if (power == ShadowPower.DARKNESS_VEIL) return 2;
+        if (power == ShadowPower.VOID_BLAST) return 2;
+        if (power == ShadowPower.SHADOW_STEP) return 1;
+        return 0;
+    }
+    
+    function _getShadowPowerRechargeRate(ShadowPower power) internal pure returns (uint256) {
+        if (power == ShadowPower.SHADOW_LORD) return 1 days;      // 1 charge per day
+        if (power == ShadowPower.VOID_WALKER) return 12 hours;    // 2 charges per day
+        if (power == ShadowPower.SHADOW_MIRROR) return 12 hours;  // 2 charges per day
+        if (power == ShadowPower.ABYSSAL_PULL) return 8 hours;    // 3 charges per day
+        if (power == ShadowPower.SOUL_HARVEST) return 8 hours;    // 3 charges per day
+        if (power == ShadowPower.DARKNESS_VEIL) return 6 hours;   // 4 charges per day
+        if (power == ShadowPower.VOID_BLAST) return 6 hours;      // 4 charges per day
+        if (power == ShadowPower.SHADOW_STEP) return 4 hours;     // 6 charges per day
+        return 1 days; // Default
     }
     
     // Override functions
