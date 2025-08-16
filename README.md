@@ -1,1 +1,26 @@
-Profit Through NFT Sharing: Dive into the world of successful profit-sharing NFTs. Discover the benefits of owning Cursed Faction NFT, a unique digital art investment option. Explore what is Cursed Faction NFT and learn how Cursed Faction shares profits. Uncover how NFT royalties work and explore top NFTs with royalties. Consider Bored Ape Yacht Club alternatives and Cryptopunks similar projects. Keep an eye on trending NFTs with airdrops and upcoming NFT events in Sandiego. Find out more about blockchain technology services and buy Cursed Faction NFT in Sandiego through a California NFT marketplace.
+# Cursed Faction Backend (MVP)
+
+Monorepo for MMO backend services: API Gateway, Matchmaking, Session, Inventory.
+
+## Quickstart
+
+- Prereqs: Docker, Docker Compose
+- Start stack:
+
+```bash
+docker compose up --build
+```
+
+- Services:
+  - API Gateway: http://localhost:8080/healthz
+  - Jaeger UI: http://localhost:16686
+  - NATS monitoring: http://localhost:8222
+
+## Environment
+
+Services read from env vars provided by docker-compose. For local dev without Docker, copy `.env.example` to each service or set:
+
+- `POSTGRES_URL`
+- `REDIS_URL`
+- `NATS_URL`
+- `OTEL_EXPORTER_OTLP_ENDPOINT`
