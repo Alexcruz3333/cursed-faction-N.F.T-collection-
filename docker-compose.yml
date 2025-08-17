@@ -1,0 +1,116 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cursed
+      POSTGRES_PASSWORD: cursed
+      POSTGRES_DB: cursed
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/sql:/docker-entrypoint-initdb.d:ro
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  nats:
+    image: nats:2.10-alpine
+    command: ["-js"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.102.1
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./infra/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"
+      - "14250:14250"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    environment:
+      - PORT=8080
+      - POSTGRES_URL=postgres://cursed:cursed@postgres:5432/cursed
+      - REDIS_URL=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - SERVICE_NAME=api-gateway
+    depends_on:
+      - postgres
+      - redis
+      - nats
+      - otel-collector
+    ports:
+      - "8080:8080"
+
+  matchmaking:
+    build:
+      context: .
+      dockerfile: services/matchmaking/Dockerfile
+    environment:
+      - PORT=4001
+      - POSTGRES_URL=postgres://cursed:cursed@postgres:5432/cursed
+      - REDIS_URL=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - SERVICE_NAME=matchmaking
+    depends_on:
+      - postgres
+      - redis
+      - nats
+      - otel-collector
+
+  session:
+    build:
+      context: .
+      dockerfile: services/session/Dockerfile
+    environment:
+      - PORT=4002
+      - POSTGRES_URL=postgres://cursed:cursed@postgres:5432/cursed
+      - REDIS_URL=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - SERVICE_NAME=session
+    depends_on:
+      - postgres
+      - redis
+      - nats
+      - otel-collector
+
+  inventory:
+    build:
+      context: .
+      dockerfile: services/inventory/Dockerfile
+    environment:
+      - PORT=4003
+      - POSTGRES_URL=postgres://cursed:cursed@postgres:5432/cursed
+      - REDIS_URL=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - SERVICE_NAME=inventory
+    depends_on:
+      - postgres
+      - redis
+      - nats
+      - otel-collector
+
+volumes:
+  pgdata:

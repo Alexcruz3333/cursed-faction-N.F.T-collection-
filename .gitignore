@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+*.log
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+
+# Docker
+/.docker/
+/docker/
+/.tmp/
+
+# IDE
+.vscode/
+.idea/
