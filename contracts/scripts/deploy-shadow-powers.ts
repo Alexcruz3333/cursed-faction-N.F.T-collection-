@@ -1,213 +1,201 @@
-import { ethers } from "hardhat";
-import { CursedAvatar721, CursedGear1155, ShadowPowerArtifact } from "../typechain-types";
+import { ethers, upgrades } from "hardhat";
+import { verify } from "./utils/verify";
+import { saveDeploymentInfo } from "./utils/deployment-utils";
 
 async function main() {
-  console.log("🚀 Deploying Cursed Faction Shadow Powers System...\n");
-
-  // Get deployer account
+  console.log("🚀 Deploying Cursed Faction NFT Collection...");
+  
   const [deployer] = await ethers.getSigners();
-  console.log(`Deploying contracts with account: ${deployer.address}`);
-  console.log(`Account balance: ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} ETH\n`);
+  console.log(`📝 Deploying contracts with account: ${deployer.address}`);
+  console.log(`💰 Account balance: ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} ETH`);
 
-  // Deploy Cursed Avatar contract
-  console.log("📦 Deploying CursedAvatar721...");
-  const CursedAvatar = await ethers.getContractFactory("CursedAvatar721");
-  const cursedAvatar = await CursedAvatar.deploy(
-    "Cursed Faction Avatar",
-    "CURSED",
-    "https://api.cursedfaction.com/avatars/"
-  );
-  await cursedAvatar.waitForDeployment();
-  const avatarAddress = await cursedAvatar.getAddress();
-  console.log(`✅ CursedAvatar721 deployed to: ${avatarAddress}`);
-
-  // Deploy Cursed Gear contract
-  console.log("\n⚔️ Deploying CursedGear1155...");
-  const CursedGear = await ethers.getContractFactory("CursedGear1155");
-  const cursedGear = await CursedGear.deploy("https://api.cursedfaction.com/gear/");
-  await cursedGear.waitForDeployment();
-  const gearAddress = await cursedGear.getAddress();
-  console.log(`✅ CursedGear1155 deployed to: ${gearAddress}`);
-
-  // Deploy Shadow Power Artifact contract
-  console.log("\n🔮 Deploying ShadowPowerArtifact...");
-  const ShadowArtifact = await ethers.getContractFactory("ShadowPowerArtifact");
-  const shadowArtifact = await ShadowArtifact.deploy(
-    "Shadow Power Artifacts",
-    "SHADOW",
-    "https://api.cursedfaction.com/artifacts/"
-  );
-  await shadowArtifact.waitForDeployment();
-  const artifactAddress = await shadowArtifact.getAddress();
-  console.log(`✅ ShadowPowerArtifact deployed to: ${artifactAddress}`);
-
-  // Enable minting on all contracts
-  console.log("\n🔓 Enabling minting on all contracts...");
-  await cursedAvatar.setMintingEnabled(true);
-  await cursedGear.setMintingEnabled(true);
-  await shadowArtifact.setMintingEnabled(true);
-  console.log("✅ Minting enabled on all contracts");
-
-  // Set up crafting station for gear
-  console.log("\n🏭 Setting up crafting station...");
-  await cursedGear.setCraftingStation(deployer.address);
-  console.log("✅ Crafting station set");
-
-  // Set signer address for gear evolution
-  console.log("\n✍️ Setting signer address...");
-  await cursedGear.setSignerAddress(deployer.address);
-  console.log("✅ Signer address set");
-
-  // Test minting an avatar with shadow powers
-  console.log("\n🎭 Testing avatar minting with shadow powers...");
+  // Network configuration
+  const network = await ethers.provider.getNetwork();
+  const isTestnet = network.chainId === 11155111n || network.chainId === 84532n; // Sepolia or Base Sepolia
+  const isMainnet = network.chainId === 1n || network.chainId === 8453n; // Ethereum or Base
   
-  // Generate a deterministic seed
-  const seed = ethers.keccak256(ethers.toUtf8Bytes("test-avatar-seed-1"));
-  
-  // Mint avatar (Gravemind Syndicate faction)
-  const mintTx = await cursedAvatar.mint(deployer.address, 0, seed); // 0 = GRAVEMIND_SYNDICATE
-  const mintReceipt = await mintTx.wait();
-  
-  // Get the minted token ID from events
-  const mintEvent = mintReceipt?.logs.find(log => {
-    try {
-      const parsed = cursedAvatar.interface.parseLog(log);
-      return parsed?.name === "AvatarMinted";
-    } catch {
-      return false;
-    }
-  });
-  
-  if (mintEvent) {
-    const parsed = cursedAvatar.interface.parseLog(mintEvent);
-    const tokenId = parsed?.args?.[0];
-    console.log(`✅ Avatar minted with token ID: ${tokenId}`);
-    
-    // Get avatar traits and shadow power
-    const traits = await cursedAvatar.traits(tokenId);
-    const shadowPower = await cursedAvatar.getShadowPower(tokenId);
-    
-    console.log(`\n📊 Avatar Details:`);
-    console.log(`   Faction: ${traits.faction}`);
-    console.log(`   Rarity: ${traits.rarity}`);
-    console.log(`   Shadow Power: ${shadowPower.power}`);
-    console.log(`   Charges: ${shadowPower.currentCharges}/${shadowPower.maxCharges}`);
-    console.log(`   Recharge Rate: ${shadowPower.needsRecharge ? "Needs Recharge" : "Fully Charged"}`);
-    
-    // Test shadow power usage
-    console.log(`\n⚡ Testing shadow power usage...`);
-    const usePowerTx = await cursedAvatar.useShadowPower(tokenId);
-    await usePowerTx.wait();
-    console.log("✅ Shadow power used");
-    
-    // Check remaining charges
-    const updatedPower = await cursedAvatar.getShadowPower(tokenId);
-    console.log(`   Remaining charges: ${updatedPower.currentCharges}`);
-    
-    // Test artifact minting and equipping
-    console.log(`\n🔮 Testing artifact system...`);
-    
-    // Mint a shadow amplifier artifact
-    const artifactTx = await shadowArtifact.mint(
-      deployer.address,
-      0, // SHADOW_AMPLIFIER
-      2, // RARE
-      3, // Power level 3
-      5  // Max power level 5
+  console.log(`🌐 Network: ${network.name} (Chain ID: ${network.chainId})`);
+  console.log(`🔧 Environment: ${isMainnet ? 'MAINNET' : isTestnet ? 'TESTNET' : 'LOCAL'}`);
+
+  try {
+    // Deploy CursedAvatar721
+    console.log("\n🎭 Deploying CursedAvatar721...");
+    const CursedAvatar721 = await ethers.getContractFactory("CursedAvatar721");
+    const cursedAvatar = await CursedAvatar721.deploy(
+      "Cursed Faction Avatar",
+      "CURSED",
+      "https://api.cursedfaction.com/avatars/"
     );
-    const artifactReceipt = await artifactTx.wait();
+    await cursedAvatar.waitForDeployment();
+    const avatarAddress = await cursedAvatar.getAddress();
+    console.log(`✅ CursedAvatar721 deployed to: ${avatarAddress}`);
+
+    // Deploy CursedGear1155
+    console.log("\n⚔️ Deploying CursedGear1155...");
+    const CursedGear1155 = await ethers.getContractFactory("CursedGear1155");
+    const cursedGear = await CursedGear1155.deploy(
+      "https://api.cursedfaction.com/gear/"
+    );
+    await cursedGear.waitForDeployment();
+    const gearAddress = await cursedGear.getAddress();
+    console.log(`✅ CursedGear1155 deployed to: ${gearAddress}`);
+
+    // Deploy ShadowPowerArtifact
+    console.log("\n🔮 Deploying ShadowPowerArtifact...");
+    const ShadowPowerArtifact = await ethers.getContractFactory("ShadowPowerArtifact");
+    const shadowPowerArtifact = await ShadowPowerArtifact.deploy(
+      "Shadow Power Artifact",
+      "SPA",
+      "https://api.cursedfaction.com/artifacts/"
+    );
+    await shadowPowerArtifact.waitForDeployment();
+    const artifactAddress = await shadowPowerArtifact.getAddress();
+    console.log(`✅ ShadowPowerArtifact deployed to: ${artifactAddress}`);
+
+    // Wait for a few block confirmations
+    console.log("\n⏳ Waiting for block confirmations...");
+    await cursedAvatar.deploymentTransaction()?.wait(5);
+    await cursedGear.deploymentTransaction()?.wait(5);
+    await shadowPowerArtifact.deploymentTransaction()?.wait(5);
+
+    // Configure contracts
+    console.log("\n⚙️ Configuring contracts...");
     
-    // Get artifact ID
-    const artifactEvent = artifactReceipt?.logs.find(log => {
-      try {
-        const parsed = shadowArtifact.interface.parseLog(log);
-        return parsed?.name === "ArtifactMinted";
-      } catch {
-        return false;
-      }
-    });
-    
-    if (artifactEvent) {
-      const parsed = shadowArtifact.interface.parseLog(artifactEvent);
-      const artifactId = parsed?.args?.[0];
-      console.log(`✅ Artifact minted with ID: ${artifactId}`);
-      
-      // Equip artifact to avatar
-      const equipTx = await shadowArtifact.equipArtifact(artifactId, tokenId);
-      await equipTx.wait();
-      console.log("✅ Artifact equipped to avatar");
-      
-      // Check power enhancement
-      const enhancement = await shadowArtifact.getPowerEnhancement(artifactId, tokenId);
-      console.log(`   Power enhancement level: ${enhancement}`);
-      
-      // Enhance artifact power
-      const enhanceTx = await shadowArtifact.enhancePower(artifactId, tokenId, 1);
-      await enhanceTx.wait();
-      console.log("✅ Artifact power enhanced");
-      
-      // Check final enhancement
-      const finalEnhancement = await shadowArtifact.getPowerEnhancement(artifactId, tokenId);
-      console.log(`   Final enhancement level: ${finalEnhancement}`);
+    // Set minting enabled on testnet/mainnet
+    if (!isMainnet) {
+      console.log("🔓 Enabling minting on testnet...");
+      await cursedAvatar.setMintingEnabled(true);
+      await cursedGear.setMintingEnabled(true);
+      await shadowPowerArtifact.setMintingEnabled(true);
+      console.log("✅ Minting enabled");
     }
+
+    // Set crafting station (can be updated later)
+    console.log("🏭 Setting crafting station...");
+    await cursedGear.setCraftingStation(deployer.address);
+    console.log("✅ Crafting station set");
+
+    // Set signer address for gear evolution
+    console.log("✍️ Setting signer address...");
+    await cursedGear.setSignerAddress(deployer.address);
+    console.log("✅ Signer address set");
+
+    // Save deployment information
+    const deploymentInfo = {
+      network: network.name,
+      chainId: network.chainId.toString(),
+      deployer: deployer.address,
+      contracts: {
+        CursedAvatar721: {
+          address: avatarAddress,
+          constructorArgs: [
+            "Cursed Faction Avatar",
+            "CURSED",
+            "https://api.cursedfaction.com/avatars/"
+          ]
+        },
+        CursedGear1155: {
+          address: gearAddress,
+          constructorArgs: [
+            "https://api.cursedfaction.com/gear/"
+          ]
+        },
+        ShadowPowerArtifact: {
+          address: artifactAddress,
+          constructorArgs: [
+            "Shadow Power Artifact",
+            "SPA",
+            "https://api.cursedfaction.com/artifacts/"
+          ]
+        }
+      },
+      timestamp: new Date().toISOString(),
+      blockNumber: await ethers.provider.getBlockNumber()
+    };
+
+    await saveDeploymentInfo(network.name, deploymentInfo);
+    console.log("💾 Deployment information saved");
+
+    // Verify contracts on testnet/mainnet
+    if (isTestnet || isMainnet) {
+      console.log("\n🔍 Verifying contracts on Etherscan...");
+      
+      try {
+        await verify(avatarAddress, [
+          "Cursed Faction Avatar",
+          "CURSED",
+          "https://api.cursedfaction.com/avatars/"
+        ]);
+        console.log("✅ CursedAvatar721 verified");
+      } catch (error) {
+        console.log("⚠️ CursedAvatar721 verification failed:", error);
+      }
+
+      try {
+        await verify(gearAddress, [
+          "https://api.cursedfaction.com/gear/"
+        ]);
+        console.log("✅ CursedGear1155 verified");
+      } catch (error) {
+        console.log("⚠️ CursedGear1155 verification failed:", error);
+      }
+
+      try {
+        await verify(artifactAddress, [
+          "Shadow Power Artifact",
+          "SPA",
+          "https://api.cursedfaction.com/artifacts/"
+        ]);
+        console.log("✅ ShadowPowerArtifact verified");
+      } catch (error) {
+        console.log("⚠️ ShadowPowerArtifact verification failed:", error);
+      }
+    }
+
+    // Display deployment summary
+    console.log("\n🎉 Deployment completed successfully!");
+    console.log("\n📋 Deployment Summary:");
+    console.log(`🌐 Network: ${network.name} (${network.chainId})`);
+    console.log(`👤 Deployer: ${deployer.address}`);
+    console.log(`🎭 CursedAvatar721: ${avatarAddress}`);
+    console.log(`⚔️ CursedGear1155: ${gearAddress}`);
+    console.log(`🔮 ShadowPowerArtifact: ${artifactAddress}`);
+    console.log(`📅 Timestamp: ${deploymentInfo.timestamp}`);
+    console.log(`🔢 Block Number: ${deploymentInfo.blockNumber}`);
+
+    // Display next steps
+    console.log("\n🚀 Next Steps:");
+    console.log("1. Update frontend configuration with contract addresses");
+    console.log("2. Set up metadata API endpoints");
+    console.log("3. Configure crafting station address");
+    console.log("4. Set up signer wallet for gear evolution");
+    console.log("5. Test minting and core functionality");
+    
+    if (isMainnet) {
+      console.log("6. ⚠️ IMPORTANT: Review and configure minting settings for mainnet");
+      console.log("7. Set appropriate mint prices and limits");
+    }
+
+  } catch (error) {
+    console.error("❌ Deployment failed:", error);
+    process.exit(1);
   }
-
-  // Test gear minting
-  console.log(`\n⚔️ Testing gear system...`);
-  
-  // Mint some gear
-  const gearTx = await cursedGear.mint(
-    deployer.address,
-    1, // Gear ID
-    5, // Amount
-    0, // WEAPON_PISTOL
-    2, // Tier 2
-    4, // Max tier 4
-    "shadow_steel", // Style modifier
-    true // Evolvable
-  );
-  await gearTx.wait();
-  console.log("✅ Gear minted successfully");
-
-  // Display deployment summary
-  console.log("\n" + "=".repeat(60));
-  console.log("🎉 SHADOW POWERS SYSTEM DEPLOYMENT COMPLETE!");
-  console.log("=".repeat(60));
-  console.log(`📍 CursedAvatar721: ${avatarAddress}`);
-  console.log(`📍 CursedGear1155: ${gearAddress}`);
-  console.log(`📍 ShadowPowerArtifact: ${artifactAddress}`);
-  console.log(`👤 Deployer: ${deployer.address}`);
-  console.log("=".repeat(60));
-  
-  console.log("\n🔗 Next Steps:");
-  console.log("1. Verify contracts on block explorer");
-  console.log("2. Test shadow power mechanics in-game");
-  console.log("3. Deploy to testnet for community testing");
-  console.log("4. Integrate with Unreal Engine 5 game client");
-  
-  console.log("\n📚 Documentation:");
-  console.log("- Shadow Powers Guide: docs/shadow-powers.md");
-  console.log("- Smart Contract ABI: contracts/artifacts/");
-  console.log("- Game Design Document: docs/game-design.md");
-
-  // Save deployment addresses
-  const deploymentInfo = {
-    network: "hardhat",
-    deployer: deployer.address,
-    contracts: {
-      cursedAvatar: avatarAddress,
-      cursedGear: gearAddress,
-      shadowArtifact: artifactAddress
-    },
-    timestamp: new Date().toISOString()
-  };
-
-  console.log("\n💾 Deployment info saved to deployment-info.json");
 }
+
+// Handle errors gracefully
+process.on('unhandledRejection', (error) => {
+  console.error('❌ Unhandled promise rejection:', error);
+  process.exit(1);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught exception:', error);
+  process.exit(1);
+});
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error("❌ Deployment failed:", error);
+    console.error('❌ Deployment script failed:', error);
     process.exit(1);
   });

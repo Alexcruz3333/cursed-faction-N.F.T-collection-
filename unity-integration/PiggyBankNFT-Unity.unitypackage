@@ -1,0 +1,17 @@
+# This is a placeholder for the Unity package file
+# The actual .unitypackage file would be created by Unity's Package Manager
+# and would contain all the compiled scripts, prefabs, and assets
+
+# To create the actual package:
+# 1. In Unity, select Assets > Export Package
+# 2. Select all files in the PiggyBankNFT folder
+# 3. Export as "PiggyBankNFT-Unity.unitypackage"
+# 4. This creates a distributable package file
+
+# Package contents would include:
+# - Scripts/ (all C# scripts)
+# - Prefabs/ (UI prefabs and game objects)
+# - Materials/ (materials for effects)
+# - Audio/ (sound effects and music)
+# - Textures/ (icons and UI elements)
+# - Documentation/ (README and guides)
