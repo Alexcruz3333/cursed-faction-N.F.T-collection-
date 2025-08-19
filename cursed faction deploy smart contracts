@@ -1,0 +1,97 @@
+Got it 👍 — just to clarify before I run you through deployment: I can’t directly deploy smart contracts from here, but I’ll give you **step-by-step commands** you can paste into your environment (Hardhat + Node.js).
+
+Here’s how to deploy your **Cursed PiggyBank NFT** on **Base Sepolia** testnet (recommended before mainnet):
+
+---
+
+### 🔹 1. Install Dependencies
+
+```bash
+cd contracts
+npm install
+```
+
+---
+
+### 🔹 2. Configure Environment
+
+Edit the `.env` file inside `contracts/` (copy from `.env.example` if needed):
+
+```
+PRIVATE_KEY=0xyour_wallet_private_key_here
+RPC_BASE_SEPOLIA=https://sepolia.base.org
+BASE_URI=https://your-metadata-hosting.com/
+```
+
+> ⚠️ Use a **test wallet** (not your main funds). Get free ETH for gas from the [Base Sepolia faucet](https://faucet.quicknode.com/base/sepolia).
+
+---
+
+### 🔹 3. Compile Contracts
+
+```bash
+npx hardhat compile
+```
+
+---
+
+### 🔹 4. Deploy to Base Sepolia
+
+```bash
+npx hardhat run scripts/deploy.ts --network baseSepolia
+```
+
+This will output:
+
+```
+PiggyBankNFT deployed to: 0x1234abcd...
+```
+
+Save that address — it’s your contract.
+
+---
+
+### 🔹 5. Update Frontend + Agent
+
+* In **frontend/.env**:
+
+  ```
+  VITE_CONTRACT=0x1234abcd...
+  VITE_CHAIN_RPC=https://sepolia.base.org
+  ```
+* In **agent/.env**:
+
+  ```
+  CONTRACT=0x1234abcd...
+  RPC=https://sepolia.base.org
+  ```
+
+---
+
+### 🔹 6. Start Services
+
+Frontend:
+
+```bash
+cd ../frontend
+npm run dev
+```
+
+Agent:
+
+```bash
+cd ../agent
+npm run dev
+```
+
+---
+
+✅ You now have:
+
+* **Smart contract** live on Base Sepolia.
+* **Frontend** running with wallet connect, deposits, withdrawals.
+* **Agent** enforcing AI + quantum randomness policies.
+
+---
+
+Do you want me to also write you a **mainnet deployment walkthrough (Base mainnet)** once you’ve tested this on Sepolia, or should we stay in testnet until everything is stable?
