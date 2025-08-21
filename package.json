@@ -11,8 +11,10 @@
     "typecheck": "npm run typecheck -ws",
     "dev": "npm run dev -ws --if-present",
     "start": "npm run start -ws --if-present",
-    "lint": "echo 'no lint configured'",
-    "format": "echo 'no format configured'",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
     "dev:gateway": "npm --workspace services/api-gateway run dev",
     "dev:matchmaking": "npm --workspace services/matchmaking run dev",
     "dev:session": "npm --workspace services/session run dev",
@@ -21,7 +23,11 @@
   "devDependencies": {
     "typescript": "^5.5.4",
     "tsx": "^4.16.2",
-    "@types/node": "^20.14.10"
+    "@types/node": "^20.14.10",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
   },
   "engines": {
     "node": ">=20.0.0",
