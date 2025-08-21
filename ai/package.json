@@ -1,0 +1,25 @@
+{
+  "name": "cursed-ai-operator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "viem": "^2.7.9",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8",
+    "date-fns": "^3.6.0",
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.2",
+    "openai": "^4.55.0",
+    "axios": "^1.7.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.16.2",
+    "@types/node": "^20.12.12"
+  }
+}
