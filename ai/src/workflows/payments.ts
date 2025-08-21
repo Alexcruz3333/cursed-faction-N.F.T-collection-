@@ -1,6 +1,6 @@
 import { Address, createWalletClient, http } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import vaultAbi from "../abi/CursedPiggyBankVault.min.json" assert { type: "json" };
+import * as vaultAbi from "../abi/CursedPiggyBankVault.min.json";
 import { AIAgent, PaymentRequest } from "../agent";
 
 export async function tryProcessPayment(

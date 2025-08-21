@@ -2,7 +2,7 @@ import "dotenv/config";
 import pino from "pino";
 import { createPublicClient, http, Address, Hex, parseAbiItem } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import vaultAbi from "./abi/CursedPiggyBankVault.min.json" assert { type: "json" };
+import * as vaultAbi from "./abi/CursedPiggyBankVault.min.json";
 import { AIAgent } from "./agent";
 import { tryProcessPayment } from "./workflows/payments";
 import { buildCaliforniaMonthlyReport } from "./workflows/tax";
@@ -66,8 +66,12 @@ async function main() {
   setInterval(async () => {
     const now = new Date();
     if (now.getUTCDate() === 1 && now.getUTCHours() === 10 && now.getUTCMinutes() < 5) {
-      const report = await buildCaliforniaMonthlyReport(publicClient, VAULT_ADDRESS, now, now);
-      log.info({ report }, "Built CA monthly tax report (review required)");
+      try {
+        const report = await buildCaliforniaMonthlyReport(VAULT_ADDRESS, now, now);
+        log.info({ report }, "Built CA monthly tax report (review required)");
+      } catch (e) {
+        log.error(e, "Failed to build tax report");
+      }
     }
   }, ONE_DAY);
 }
