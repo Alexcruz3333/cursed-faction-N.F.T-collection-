@@ -2,21 +2,17 @@
   "name": "cursed-faction-backend",
   "private": true,
   "version": "0.1.0",
-  "workspaces": [
-    "packages/*",
-    "services/*"
-  ],
   "scripts": {
-    "build": "npm run build -ws",
-    "typecheck": "npm run typecheck -ws",
-    "dev": "npm run dev -ws --if-present",
-    "start": "npm run start -ws --if-present",
+    "build": "pnpm run -r build",
+    "typecheck": "pnpm run -r typecheck",
+    "dev": "pnpm run -r dev --if-present",
+    "start": "pnpm run -r start --if-present",
     "lint": "echo 'no lint configured'",
     "format": "echo 'no format configured'",
-    "dev:gateway": "npm --workspace services/api-gateway run dev",
-    "dev:matchmaking": "npm --workspace services/matchmaking run dev",
-    "dev:session": "npm --workspace services/session run dev",
-    "dev:inventory": "npm --workspace services/inventory run dev"
+    "dev:gateway": "pnpm --filter @cursed/api-gateway run dev",
+    "dev:matchmaking": "pnpm --filter @cursed/matchmaking run dev",
+    "dev:session": "pnpm --filter @cursed/session run dev",
+    "dev:inventory": "pnpm --filter @cursed/inventory run dev"
   },
   "devDependencies": {
     "typescript": "^5.5.4",
@@ -25,6 +21,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=9.0.0"
-  }
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.12.0"
 }
