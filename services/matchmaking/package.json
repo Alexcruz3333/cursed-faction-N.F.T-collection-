@@ -11,6 +11,6 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@cursed/common": "file:../../packages/common"
+    "@cursed/common": "0.1.0"
   }
 }
