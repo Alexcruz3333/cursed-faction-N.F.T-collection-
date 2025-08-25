@@ -1,10 +1,10 @@
-# cursed faction NFT vault system 
+# Cursed Faction NFT Vault System
 
-A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has its own vault where anyone can deposit funds, but only the current owner can withdraw. Perfect for savings goals, gifts, tips, and collaborative funding.
+A revolutionary NFT collection that acts like a crypto vault! Each NFT has its own vault where anyone can deposit funds, but only the current owner can withdraw. Perfect for savings goals, gifts,[...]
 
 ## ✨ What Makes It Special
 
-- **🎁 Anyone Can Contribute**: Send ETH to any PiggyBank NFT as a gift or tip
+- **🎁 Anyone Can Contribute**: Send ETH to any Cursed Faction NFT as a gift or tip
 - **🔒 Owner-Only Withdrawals**: Only the current NFT owner can access the funds
 - **🎯 Savings Goals**: Set targets and track progress visually
 - **⏰ Time Locks**: Optional time-based restrictions for disciplined saving
@@ -24,7 +24,7 @@ A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has 
 
 3. **Deploy the contract**:
    ```bash
-   npx hardhat run scripts/deploy-piggy-bank.ts --network base-mainnet
+   npx hardhat run scripts/deploy-cursed-faction-vault.ts --network base-mainnet
    ```
 
 4. **Run tests**:
@@ -56,9 +56,9 @@ A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has 
 
 ## 🏗️ Architecture
 
-### Smart Contract (`PiggyBankNFT.sol`)
+### Smart Contract (`CursedFactionVaultNFT.sol`)
 
-- **ERC-721 NFT**: Each token represents a unique piggy bank
+- **ERC-721 NFT**: Each token represents a unique vault
 - **Vault System**: Separate ETH and ERC-20 balances per token
 - **Access Control**: Only token owners can withdraw or modify settings
 - **Time Locks**: Configurable unlock dates for disciplined saving
@@ -75,12 +75,12 @@ A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has 
 
 ### For Contributors (Anyone)
 
-- `depositETH(tokenId)`: Send ETH to any PiggyBank NFT
+- `depositETH(tokenId)`: Send ETH to any Cursed Faction NFT vault
 - `depositERC20(tokenId, token, amount)`: Send ERC-20 tokens
 
 ### For Owners
 
-- `withdrawETH(tokenId, amount)`: Withdraw ETH from your NFT
+- `withdrawETH(tokenId, amount)`: Withdraw ETH from your NFT vault
 - `withdrawERC20(tokenId, token, amount)`: Withdraw ERC-20 tokens
 - `setSavingsGoal(tokenId, goalWei)`: Set or update savings target
 - `extendUnlock(tokenId, newUnlockTime)`: Extend time lock (never shorten)
@@ -131,7 +131,7 @@ A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has 
 npx hardhat test
 
 # Run specific test file
-npx hardhat test test/PiggyBankNFT.test.ts
+npx hardhat test test/CursedFactionVaultNFT.test.ts
 
 # Run with coverage
 npx hardhat coverage
