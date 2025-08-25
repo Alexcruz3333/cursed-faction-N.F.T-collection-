@@ -1,4 +1,4 @@
-# cursed faction NFT vault system ecosystem
+# cursed faction NFT vault system 
 
 A revolutionary NFT collection that acts like a crypto piggy bank! Each NFT has its own vault where anyone can deposit funds, but only the current owner can withdraw. Perfect for savings goals, gifts, tips, and collaborative funding.
 
