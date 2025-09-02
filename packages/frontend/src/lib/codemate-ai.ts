@@ -98,7 +98,7 @@ export class CodemateAIService {
       tags.push(...nameWords);
     }
 
-    return [...new Set(tags)].slice(0, 5); // Unique tags, max 5
+    return Array.from(new Set(tags)).slice(0, 5); // Unique tags, max 5
   }
 
   private generateFallbackSummary(nft: NFTMetadata): string {

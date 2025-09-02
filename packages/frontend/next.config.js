@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
   images: {
-    domains: ['ipfs.io', 'gateway.pinata.cloud', 'arweave.net'], // Common NFT hosting domains
+    domains: ['ipfs.io', 'gateway.pinata.cloud', 'arweave.net', 'via.placeholder.com'], // Common NFT hosting domains
   },
 }
 

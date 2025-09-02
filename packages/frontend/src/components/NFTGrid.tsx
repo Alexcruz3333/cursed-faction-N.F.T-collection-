@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import NFTCard from './NFTCard';
 import { NFTMetadata, NFTWithAI } from '@/types/nft';
