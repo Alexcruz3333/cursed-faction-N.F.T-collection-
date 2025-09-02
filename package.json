@@ -16,7 +16,9 @@
     "dev:gateway": "npm --workspace services/api-gateway run dev",
     "dev:matchmaking": "npm --workspace services/matchmaking run dev",
     "dev:session": "npm --workspace services/session run dev",
-    "dev:inventory": "npm --workspace services/inventory run dev"
+    "dev:inventory": "npm --workspace services/inventory run dev",
+    "dev:frontend": "npm --workspace packages/frontend run dev",
+    "build:frontend": "npm --workspace packages/frontend run build"
   },
   "devDependencies": {
     "typescript": "^5.5.4",
