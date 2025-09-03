@@ -1,6 +1,6 @@
 import "dotenv/config";
 import pino from "pino";
-import { createPublicClient, http, Address, Hex, parseAbiItem } from "viem";
+import { createPublicClient, http, Address, parseAbiItem } from "viem";
 import { base, baseSepolia } from "viem/chains";
 import { AIAgent } from "./agent";
 import { tryProcessPayment } from "./workflows/payments";
