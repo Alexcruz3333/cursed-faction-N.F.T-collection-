@@ -15,7 +15,10 @@ async function main() {
 
   app.get<{ Params: { id: string } }>("/v1/players/:id", async (req, reply) => {
     const { id } = req.params;
-    const { rows } = await pg.query("SELECT id, account_level, mmr, wallet_addr, created_at FROM players WHERE id = $1", [id]);
+    const { rows } = await pg.query(
+      "SELECT id, account_level, mmr, wallet_addr, created_at FROM players WHERE id = $1",
+      [id]
+    );
     if (rows.length === 0) return reply.code(404).send({ error: "not_found" });
     return rows[0];
   });

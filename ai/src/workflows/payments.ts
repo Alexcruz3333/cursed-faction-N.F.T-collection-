@@ -20,9 +20,9 @@ export async function tryProcessPayment(
 
   const hash = await walletClient.writeContract({
     address: vault,
-    abi: vaultAbi as any,
+    abi: vaultAbi as unknown as readonly unknown[],
     functionName: "spendETH",
-    args: [req.tokenId, req.to, req.amountWei]
+    args: [req.tokenId, req.to, req.amountWei],
   });
 
   return { ok: true, tx: hash };

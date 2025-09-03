@@ -11,17 +11,23 @@
     "typecheck": "npm run typecheck -ws",
     "dev": "npm run dev -ws --if-present",
     "start": "npm run start -ws --if-present",
-    "lint": "echo 'no lint configured'",
-    "format": "echo 'no format configured'",
+    "lint": "eslint . --ext .ts,.js --ignore-path .gitignore",
+    "lint:fix": "eslint . --ext .ts,.js --ignore-path .gitignore --fix",
+    "format": "prettier --check '**/*.{ts,js,json,md}'",
+    "format:fix": "prettier --write '**/*.{ts,js,json,md}'",
     "dev:gateway": "npm --workspace services/api-gateway run dev",
     "dev:matchmaking": "npm --workspace services/matchmaking run dev",
     "dev:session": "npm --workspace services/session run dev",
     "dev:inventory": "npm --workspace services/inventory run dev"
   },
   "devDependencies": {
-    "typescript": "^5.5.4",
+    "@types/node": "^20.14.10",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
     "tsx": "^4.16.2",
-    "@types/node": "^20.14.10"
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=20.0.0",

@@ -10,10 +10,14 @@ export function setupTracing() {
   sdk = new NodeSDK({
     serviceName: env.SERVICE_NAME,
     traceExporter: new OTLPTraceExporter({ url: `${env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces` }),
-    instrumentations: [getNodeAutoInstrumentations()]
+    instrumentations: [getNodeAutoInstrumentations()],
   });
   sdk.start();
-  process.on("SIGTERM", async () => { await sdk?.shutdown(); });
-  process.on("SIGINT", async () => { await sdk?.shutdown(); });
+  process.on("SIGTERM", async () => {
+    await sdk?.shutdown();
+  });
+  process.on("SIGINT", async () => {
+    await sdk?.shutdown();
+  });
   return sdk;
 }

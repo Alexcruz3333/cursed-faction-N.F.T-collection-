@@ -18,11 +18,9 @@ export async function executeAirdrop(
   for (const r of req.recipients) {
     const hash = await walletClient.writeContract({
       address: vault,
-      abi: vaultAbi as any,
+      abi: vaultAbi as unknown as readonly unknown[],
       functionName: req.token ? "spendERC20" : "spendETH",
-      args: req.token
-        ? [req.tokenId, req.token, r.to, r.amountWei]
-        : [req.tokenId, r.to, r.amountWei]
+      args: req.token ? [req.tokenId, req.token, r.to, r.amountWei] : [req.tokenId, r.to, r.amountWei],
     });
     txs.push(hash);
   }

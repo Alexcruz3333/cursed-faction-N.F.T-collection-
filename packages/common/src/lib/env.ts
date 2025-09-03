@@ -10,7 +10,7 @@ const EnvSchema = z.object({
   POSTGRES_URL: z.string().url().optional(),
   REDIS_URL: z.string().optional(),
   NATS_URL: z.string().optional(),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional()
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional(),
 });
 
 export const env = EnvSchema.parse(process.env);

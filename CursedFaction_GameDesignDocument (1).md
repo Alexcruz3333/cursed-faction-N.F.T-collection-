@@ -8,16 +8,16 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Core Pillars**
 
-* **Open‑World Chaos:** Dense, GTA‑like sandbox with vehicles, pursuits, police/sentinel response, emergent events.
-* **Skillful PvP:** Shooter‑melee hybrid with abilities; time‑to‑kill tuned for counterplay and team tactics.
-* **Faction Metagame:** Territory control, seasonal map shifts, faction tech trees.
-* **Ethical Web3:** Ownership without power creep; optional custody; rentals; crafting; marketplace with strong anti‑cheat and duping protections.
+- **Open‑World Chaos:** Dense, GTA‑like sandbox with vehicles, pursuits, police/sentinel response, emergent events.
+- **Skillful PvP:** Shooter‑melee hybrid with abilities; time‑to‑kill tuned for counterplay and team tactics.
+- **Faction Metagame:** Territory control, seasonal map shifts, faction tech trees.
+- **Ethical Web3:** Ownership without power creep; optional custody; rentals; crafting; marketplace with strong anti‑cheat and duping protections.
 
 ---
 
 ## 2) World, Lore & Map
 
-**City:** *Nocturna Prime*—five districts stitched atop leyline fractures. Weather and day/night shift patrols, spawn tables, occult anomalies.
+**City:** _Nocturna Prime_—five districts stitched atop leyline fractures. Weather and day/night shift patrols, spawn tables, occult anomalies.
 
 **Districts (MVP focus: 1+Hub)**
 
@@ -41,9 +41,9 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Progression**
 
-* **Account Level** → unlocks baseline perks, blueprints.
-* **Role Specs** (choose 1 primary, 1 secondary): *Vanguard, Shade, Augur, Mechanist*.
-* **Skill Trees:** Small, meaningful nodes; respec cost in soft currency.
+- **Account Level** → unlocks baseline perks, blueprints.
+- **Role Specs** (choose 1 primary, 1 secondary): _Vanguard, Shade, Augur, Mechanist_.
+- **Skill Trees:** Small, meaningful nodes; respec cost in soft currency.
 
 ---
 
@@ -51,17 +51,17 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Attributes (0–100, soft‑cap 80):**
 
-* **Might** (melee dmg/carry), **Celerity** (sprint/ADS/parkour), **Focus** (recoil/crit), **Aether** (abilities/wards), **Resolve** (HP/stagger).
+- **Might** (melee dmg/carry), **Celerity** (sprint/ADS/parkour), **Focus** (recoil/crit), **Aether** (abilities/wards), **Resolve** (HP/stagger).
 
 **Derived Stats** (examples):
 
-* Weapon Handling = 50 + 0.6×Focus + 0.3×Celerity
-* Ability Power = 50 + 0.8×Aether
-* Effective HP = BaseHP × (1 + 0.004×Resolve)
+- Weapon Handling = 50 + 0.6×Focus + 0.3×Celerity
+- Ability Power = 50 + 0.8×Aether
+- Effective HP = BaseHP × (1 + 0.004×Resolve)
 
 **Weapon Classes:** Pistols, SMGs, ARs, BRs, Shotguns, LMGs, Snipers, Melee (blades/hammers/chains), Throwables, Sigils (occult ranged).
 
-**Armor Styles:** *Reliquary (warded), Runic (balanced), Grafted (tech), Wraithweave (mobility)*—each with 2–3 set bonuses.
+**Armor Styles:** _Reliquary (warded), Runic (balanced), Grafted (tech), Wraithweave (mobility)_—each with 2–3 set bonuses.
 
 **Vehicles:** Bikes, muscle cars, vans, armored sedans, hover‑rafts (district‑specific). Light weapon hard‑points and ramming physics.
 
@@ -74,34 +74,33 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 **Types & Roles**
 
 1. **Cursed Avatars (ERC‑721):**
+   - Identity, custom animations, voice filters.
+   - **Trait‑gated quests** and **lore drops**.
+   - **Bracketed Side‑grades:** e.g., +2% parkour stamina (capped; normalized in Ranked).
 
-   * Identity, custom animations, voice filters.
-   * **Trait‑gated quests** and **lore drops**.
-   * **Bracketed Side‑grades:** e.g., +2% parkour stamina (capped; normalized in Ranked).
 2. **Gear & Styles (ERC‑1155):**
+   - Weapon/armor skins with _style modifiers_ (cosmetic FX, inspect rituals).
+   - Craftable variants; upgrade via burn‑to‑evolve.
 
-   * Weapon/armor skins with *style modifiers* (cosmetic FX, inspect rituals).
-   * Craftable variants; upgrade via burn‑to‑evolve.
 3. **Artifacts (ERC‑721 / Soulbound on equip):**
+   - Time‑boxed powers (e.g., 3 heist runs/day): extra extraction route, temporary ward, respawn token in PvE sections; **disabled in Ranked**.
 
-   * Time‑boxed powers (e.g., 3 heist runs/day): extra extraction route, temporary ward, respawn token in PvE sections; **disabled in Ranked**.
 4. **Token‑Bound Loadouts (ERC‑6551):**
+   - Each Avatar can own a **Loadout Account** that holds its gear, currency escrow, and crafting slots.
 
-   * Each Avatar can own a **Loadout Account** that holds its gear, currency escrow, and crafting slots.
 5. **Rentals (ERC‑4907):** Built‑in lending for tournaments or trials.
 
 **Dynamic Traits & Seasons**
 
-* On‑chain trait seeds stored; **off‑chain Oracles** expand for seasonal events (e.g., eclipse buff week).
-* **Seasonal Sagas:** Top factions unlock city alterations (new roaming bosses, map mutations).
+- On‑chain trait seeds stored; **off‑chain Oracles** expand for seasonal events (e.g., eclipse buff week).
+- **Seasonal Sagas:** Top factions unlock city alterations (new roaming bosses, map mutations).
 
 **Matchmaking Fairness**
 
-* **Three Ladders:**
-
-  * **Ranked Normalized:** all NFTs cosmetic‑only.
-  * **Open Division:** capped side‑grades (sum of bonuses ≤ 5%).
-  * **Vanilla Queue:** no NFTs loaded.
+- **Three Ladders:**
+  - **Ranked Normalized:** all NFTs cosmetic‑only.
+  - **Open Division:** capped side‑grades (sum of bonuses ≤ 5%).
+  - **Vanilla Queue:** no NFTs loaded.
 
 ---
 
@@ -109,20 +108,20 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Currencies**
 
-* **Soft:** *Marks* (earn in‑game; sinks: crafting, respecs, fast‑travel).
-* **Hard:** *Crowns* (purchased; cosmetic bundles, name changes). No gacha gambling.
-* **On‑Chain:** NFTs only at launch; **no fungible token to avoid regulatory risk**. Future governance token possible via separate compliance track.
+- **Soft:** _Marks_ (earn in‑game; sinks: crafting, respecs, fast‑travel).
+- **Hard:** _Crowns_ (purchased; cosmetic bundles, name changes). No gacha gambling.
+- **On‑Chain:** NFTs only at launch; **no fungible token to avoid regulatory risk**. Future governance token possible via separate compliance track.
 
 **Marketplace**
 
-* In‑client listings for ERC‑721/1155; royalties via platform enforcement.
-* **Crafting:** Combine 3 skins + reagents → evolved variant; chain proof stored (hash).
-* **Duping Safe:** Deterministic mint IDs; server‑authoritative inventory; delayed settlement with Merkle proofs.
+- In‑client listings for ERC‑721/1155; royalties via platform enforcement.
+- **Crafting:** Combine 3 skins + reagents → evolved variant; chain proof stored (hash).
+- **Duping Safe:** Deterministic mint IDs; server‑authoritative inventory; delayed settlement with Merkle proofs.
 
 **Anti‑P2W Controls**
 
-* Stat caps, Ranked normalization, and side‑grade ceilings.
-* Visibility: all item bonuses public and audit‑logged.
+- Stat caps, Ranked normalization, and side‑grade ceilings.
+- Visibility: all item bonuses public and audit‑logged.
 
 ---
 
@@ -132,29 +131,29 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Networking**
 
-* **Authoritative Dedicated Servers** (Linux) on Kubernetes/Gamelift.
-* 30–60Hz tick; interest management & world partition streaming.
-* Hit‑scan reconciliation, client prediction & server rewind.
-* **Shard Size:** 32–40 players per city slice (MVP), dynamic instancing per district; seamless fast‑travel between shards via portals.
+- **Authoritative Dedicated Servers** (Linux) on Kubernetes/Gamelift.
+- 30–60Hz tick; interest management & world partition streaming.
+- Hit‑scan reconciliation, client prediction & server rewind.
+- **Shard Size:** 32–40 players per city slice (MVP), dynamic instancing per district; seamless fast‑travel between shards via portals.
 
 **Services** (microservices + message bus)
 
-* **Matchmaking & Session** (Elo+MMR; queues for Ranked/Open/Vanilla).
-* **Inventory & Crafting** (server‑auth, rollback journal).
-* **Economy** (prices, sinks, telemetry balancing).
-* **Wallet & Web3** (custodial by default with export; supports Privy/Web3Auth; chains: **Base** or **Polygon** L2 for low fees).
-* **NFT Indexer** (The Graph/substreams), **Oracle** (Chainlink/Redstone) for seasonal toggles.
-* **Anti‑Cheat** (EAC/BattlEye) + server heuristics.
-* **Telemetry** (OpenTelemetry + BigQuery/Snowflake) → Live‑ops dashboards.
+- **Matchmaking & Session** (Elo+MMR; queues for Ranked/Open/Vanilla).
+- **Inventory & Crafting** (server‑auth, rollback journal).
+- **Economy** (prices, sinks, telemetry balancing).
+- **Wallet & Web3** (custodial by default with export; supports Privy/Web3Auth; chains: **Base** or **Polygon** L2 for low fees).
+- **NFT Indexer** (The Graph/substreams), **Oracle** (Chainlink/Redstone) for seasonal toggles.
+- **Anti‑Cheat** (EAC/BattlEye) + server heuristics.
+- **Telemetry** (OpenTelemetry + BigQuery/Snowflake) → Live‑ops dashboards.
 
 **Data**
 
-* **DBs:** Postgres (accounts, progress), Redis (sessions), S3/CDN (patches), IPFS/Arweave (NFT art/animations + trait json).
+- **DBs:** Postgres (accounts, progress), Redis (sessions), S3/CDN (patches), IPFS/Arweave (NFT art/animations + trait json).
 
 **Security**
 
-* Deterministic, server‑side damage; encrypted traffic; rate limiting; secure enclaves for drop tables.
-* Contract upgradable via timelock + multi‑sig; audit pipeline.
+- Deterministic, server‑side damage; encrypted traffic; rate limiting; secure enclaves for drop tables.
+- Contract upgradable via timelock + multi‑sig; audit pipeline.
 
 ---
 
@@ -164,13 +163,13 @@ A fast, gritty, supernatural open‑world MMO set in a neo‑occult metropolis w
 
 **Contracts**
 
-* `CursedAvatar721` — core avatar mint; immutable art baseURI; trait hash in `extraData`.
-* `CursedGear1155` — gear skins/styles; mint/burn/evolve.
-* `Artifact721` — limited‑charge items; soulbind on first equip (non‑transferable flag while charged).
-* `LoadoutTBA` — Token‑Bound Accounts for per‑avatar inventory.
-* `Rental4907` — time‑boxed user assignments.
-* `CraftingStation` — burns + mint logic; Merkle recipes; server oracle signs crafting tickets.
-* `SeasonPass721` — optional; grants seasonal track & saga votes.
+- `CursedAvatar721` — core avatar mint; immutable art baseURI; trait hash in `extraData`.
+- `CursedGear1155` — gear skins/styles; mint/burn/evolve.
+- `Artifact721` — limited‑charge items; soulbind on first equip (non‑transferable flag while charged).
+- `LoadoutTBA` — Token‑Bound Accounts for per‑avatar inventory.
+- `Rental4907` — time‑boxed user assignments.
+- `CraftingStation` — burns + mint logic; Merkle recipes; server oracle signs crafting tickets.
+- `SeasonPass721` — optional; grants seasonal track & saga votes.
 
 **Example Interfaces (pseudocode)**
 
@@ -194,11 +193,11 @@ interface IArtifact721 {
 
 ## 9) Game Modes (MVP + Beyond)
 
-* **Free‑Roam Contracts:** Escort, Hack & Hold, Relic Hunt, Courier Intercept.
-* **Heists (4–6 players):** Recon → Infiltration → Vault → Extraction; optional PvP invasion.
-* **Faction War Windows:** Region capture, deployables (wards, barricades, turrets).
-* **Ranked Arenas:** 3v3/5v5 Elimination and Control; strict normalization.
-* **Bounties/Manhunts:** Player becomes target; escalating rewards and city AI response.
+- **Free‑Roam Contracts:** Escort, Hack & Hold, Relic Hunt, Courier Intercept.
+- **Heists (4–6 players):** Recon → Infiltration → Vault → Extraction; optional PvP invasion.
+- **Faction War Windows:** Region capture, deployables (wards, barricades, turrets).
+- **Ranked Arenas:** 3v3/5v5 Elimination and Control; strict normalization.
+- **Bounties/Manhunts:** Player becomes target; escalating rewards and city AI response.
 
 ---
 
@@ -206,41 +205,41 @@ interface IArtifact721 {
 
 **Item Power Bands:**
 
-* Tiers T1–T5 with narrow stat deltas (e.g., +0–5%).
-* Diminishing returns past soft‑cap; normalization in competitive modes.
+- Tiers T1–T5 with narrow stat deltas (e.g., +0–5%).
+- Diminishing returns past soft‑cap; normalization in competitive modes.
 
 **Crafting & Mods:**
 
-* Runes (ability augments), Sigils (visual trails), Relic Sockets (situational bonuses).
-* Durability only on artifacts (recharges daily); no permanent breakage.
+- Runes (ability augments), Sigils (visual trails), Relic Sockets (situational bonuses).
+- Durability only on artifacts (recharges daily); no permanent breakage.
 
 **Seasonal Reset:**
 
-* Map state and faction tech partially reset; cosmetics permanent; competitive rank soft reset.
+- Map state and faction tech partially reset; cosmetics permanent; competitive rank soft reset.
 
 ---
 
 ## 11) Content Pipeline
 
-* **Art Direction:** “Occult industrial”: hex sigils, rune graffiti, neon + tarnished metal, cloth + bone + chrome.
-* **Tools:** UE5 + Blender + Substance; Houdini for destruction; Wwise audio.
-* **Validation:** Triangle budgets per LOD; motion matching for melee; IK for parkour.
+- **Art Direction:** “Occult industrial”: hex sigils, rune graffiti, neon + tarnished metal, cloth + bone + chrome.
+- **Tools:** UE5 + Blender + Substance; Houdini for destruction; Wwise audio.
+- **Validation:** Triangle budgets per LOD; motion matching for melee; IK for parkour.
 
 ---
 
 ## 12) Server Rules, Moderation, Community
 
-* **Code of Conduct & Reporting** in‑client; penalty tiers; appeal system.
-* **Voice/Chat Filters** with on‑device toxicity models.
-* **Custom Servers (later):** Mod kits for cosmetic maps only.
+- **Code of Conduct & Reporting** in‑client; penalty tiers; appeal system.
+- **Voice/Chat Filters** with on‑device toxicity models.
+- **Custom Servers (later):** Mod kits for cosmetic maps only.
 
 ---
 
 ## 13) Compliance & Risk
 
-* **No loot boxes.** Clear odds on drops; region‑specific compliance.
-* **Privacy:** GDPR/CCPA; minimal data; wallet exportable.
-* **Age Rating Target:** M/18+ (violence, mild occult themes).
+- **No loot boxes.** Clear odds on drops; region‑specific compliance.
+- **Privacy:** GDPR/CCPA; minimal data; wallet exportable.
+- **Age Rating Target:** M/18+ (violence, mild occult themes).
 
 ---
 
@@ -250,19 +249,22 @@ interface IArtifact721 {
 
 **Content**
 
-* 1 Hub + **Ashen Ward** district (2.5–3 km² playable).
-* 32‑player shards; basic police/sentinel AI.
-* 10 weapons, 20 armor sets, 12 abilities, 8 vehicles.
-* Free‑Roam + 1 Heist + 1 Ranked map + Bounty system.
-* Web3: Avatar import, style skins, rentals, custodial wallet; in‑client marketplace.
+- 1 Hub + **Ashen Ward** district (2.5–3 km² playable).
+- 32‑player shards; basic police/sentinel AI.
+- 10 weapons, 20 armor sets, 12 abilities, 8 vehicles.
+- Free‑Roam + 1 Heist + 1 Ranked map + Bounty system.
+- Web3: Avatar import, style skins, rentals, custodial wallet; in‑client marketplace.
 
 **Metrics of Success**
 
-* DAU 5–10k (alpha), 10‑min session retention > 50%, > 30% squad formation.
+- DAU 5–10k (alpha), 10‑min session retention > 50%, > 30% squad formation.
 
 ---
 
 ## 15) Roadmap & Milestones
 
 **M0–M2: Pre‑prod** — Team hire, greybox movement/combat; contract scaffolds. **M3–M5: Core** — Vehicle + shooting + abilities; Ashen Ward blockout; dedicated servers online. \*
+
+```
+
 ```

@@ -2,7 +2,6 @@ import "dotenv/config";
 import pino from "pino";
 import { createPublicClient, http, Address, Hex, parseAbiItem } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import * as vaultAbi from "./abi/CursedPiggyBankVault.min.json";
 import { AIAgent } from "./agent";
 import { tryProcessPayment } from "./workflows/payments";
 import { buildCaliforniaMonthlyReport } from "./workflows/tax";
@@ -24,21 +23,27 @@ async function main() {
 
   const chain = CHAIN_ID === base.id ? base : baseSepolia;
   const publicClient = createPublicClient({ transport: http(RPC_URL), chain });
-  const agent = new AIAgent({ openaiApiKey: OPENAI_API_KEY, dailyLimitWei: DAILY_ETH_SPEND_LIMIT_WEI, maxSingleWei: MAX_SINGLE_PAYMENT_WEI });
+  const agent = new AIAgent({
+    openaiApiKey: OPENAI_API_KEY,
+    dailyLimitWei: DAILY_ETH_SPEND_LIMIT_WEI,
+    maxSingleWei: MAX_SINGLE_PAYMENT_WEI,
+  });
 
   log.info({ chainId: CHAIN_ID, vault: VAULT_ADDRESS }, "AI operator starting...");
 
   // Example: subscribe to NodeAppended for monitoring
-  const nodeAppendedTopic = (parseAbiItem("event NodeAppended(uint256 indexed tokenId,uint256 indexed nodeId,uint256 indexed parentId,uint8 edgeType,address token,address actor,uint256 amount,bytes32 meta)") as any).topicHash as Hex;
+  const nodeAppendedEvent = parseAbiItem(
+    "event NodeAppended(uint256 indexed tokenId,uint256 indexed nodeId,uint256 indexed parentId,uint8 edgeType,address token,address actor,uint256 amount,bytes32 meta)"
+  );
 
   publicClient.watchEvent({
     address: VAULT_ADDRESS,
+    event: nodeAppendedEvent,
     onLogs: (logs) => {
       for (const l of logs) {
-        log.info({ log: l }, "NodeAppended");
+        log.info({ log: l, event: nodeAppendedEvent.name }, "NodeAppended");
       }
     },
-    events: [{ type: "event", name: "NodeAppended" } as any]
   });
 
   // Placeholder: sample payment queue item (would come from webhook/db/helpdesk)

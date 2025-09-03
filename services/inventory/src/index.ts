@@ -15,16 +15,19 @@ async function main() {
     return rows;
   });
 
-  app.post<{ Params: { playerId: string }, Body: { itemId: string; qty: number } }>("/v1/inventory/:playerId", async (req) => {
-    const { playerId } = req.params;
-    const { itemId, qty } = req.body;
-    await pg.query(
-      `INSERT INTO inventory (player_id, item_id, qty) VALUES ($1, $2, $3)
+  app.post<{ Params: { playerId: string }; Body: { itemId: string; qty: number } }>(
+    "/v1/inventory/:playerId",
+    async (req) => {
+      const { playerId } = req.params;
+      const { itemId, qty } = req.body;
+      await pg.query(
+        `INSERT INTO inventory (player_id, item_id, qty) VALUES ($1, $2, $3)
        ON CONFLICT (player_id, item_id) DO UPDATE SET qty = $3, updated_at = now()`,
-      [playerId, itemId, qty]
-    );
-    return { status: "ok" };
-  });
+        [playerId, itemId, qty]
+      );
+      return { status: "ok" };
+    }
+  );
 
   const port = Number(env.PORT ?? 4003);
   await app.listen({ port, host: "0.0.0.0" });

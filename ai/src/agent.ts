@@ -2,7 +2,12 @@ import OpenAI from "openai";
 import { z } from "zod";
 
 export type PaymentRequest = { tokenId: bigint; to: `0x${string}`; amountWei: bigint; memo?: string };
-export type AirdropRequest = { tokenId: bigint; token?: `0x${string}`; recipients: { to: `0x${string}`; amountWei: bigint }[]; memo?: string };
+export type AirdropRequest = {
+  tokenId: bigint;
+  token?: `0x${string}`;
+  recipients: { to: `0x${string}`; amountWei: bigint }[];
+  memo?: string;
+};
 export type Decision = { approve: boolean; reason: string; cappedAmountWei?: bigint };
 
 const schema = z.object({ approve: z.boolean(), reason: z.string(), cappedAmountWei: z.string().optional() });
@@ -32,7 +37,7 @@ export class AIAgent {
       const out = await this.llm.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
       });
 
       const msg = out.choices[0]?.message?.content ?? "{}";

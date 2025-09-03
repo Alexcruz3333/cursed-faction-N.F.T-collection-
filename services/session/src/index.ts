@@ -13,7 +13,13 @@ async function main() {
   const sub = nats.subscribe("matchmaking.match_found");
   (async () => {
     for await (const m of sub) {
-      const match = JSON.parse(new TextDecoder().decode(m.data)) as { mode: string; region: string; teamA: string[]; teamB: string[]; createdAt: number };
+      const match = JSON.parse(new TextDecoder().decode(m.data)) as {
+        mode: string;
+        region: string;
+        teamA: string[];
+        teamB: string[];
+        createdAt: number;
+      };
       const id = randomUUID();
       sessions.set(id, { id, region: match.region, mode: match.mode, teamA: match.teamA, teamB: match.teamB });
       logger.info({ id, match }, "session_created");
@@ -23,7 +29,7 @@ async function main() {
 
   app.get("/healthz", async () => ({ status: "ok" }));
   app.get("/v1/sessions/:id", async (req, reply) => {
-    const id = (req.params as any).id as string;
+    const id = (req.params as { id: string }).id;
     const s = sessions.get(id);
     if (!s) return reply.code(404).send({ error: "not_found" });
     return s;

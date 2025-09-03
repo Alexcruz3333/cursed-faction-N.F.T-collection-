@@ -16,6 +16,7 @@ A revolutionary NFT collection that acts like a crypto vault! Each NFT has its o
 ### Smart Contract Deployment
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -23,6 +24,7 @@ A revolutionary NFT collection that acts like a crypto vault! Each NFT has its o
 2. **Configure Hardhat** (update `hardhat.config.ts` with your network settings)
 
 3. **Deploy the contract**:
+
    ```bash
    npx hardhat run scripts/deploy-cursed-faction-vault.ts --network base-mainnet
    ```
@@ -35,11 +37,13 @@ A revolutionary NFT collection that acts like a crypto vault! Each NFT has its o
 ### Frontend Setup
 
 1. **Navigate to frontend directory**:
+
    ```bash
    cd frontend
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```

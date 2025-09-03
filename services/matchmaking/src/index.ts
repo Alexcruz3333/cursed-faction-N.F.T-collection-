@@ -1,4 +1,4 @@
-import { env, logger, setupTracing, createNats, createRedis } from "@cursed/common";
+import { logger, setupTracing, createNats, createRedis } from "@cursed/common";
 
 setupTracing();
 
