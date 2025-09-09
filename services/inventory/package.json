@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@cursed/common": "*",
-    "fastify": "^4.28.1"
+    "fastify": "^5.0.0"
   }
 }
