@@ -4,6 +4,12 @@ dist/
 *.log
 *.tsbuildinfo
 
+# pnpm
+.pnpm-store/
+# Only keep root pnpm-lock.yaml, ignore individual package lock files
+**/pnpm-lock.yaml
+!pnpm-lock.yaml
+
 # Env
 .env
 .env.*
